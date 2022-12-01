@@ -15,12 +15,12 @@ const getData = async () => {
 /******************************/
 export const partOne = async () => {
   const data = await getData();
-  const arr: number[] = data
-    .split("\n\n")
-    .map((x) => x.split("\n"))
-    .map((y) => y.map((z) => parseInt(z)).reduce((a, b) => a + b));
-  const max = Math.max(...arr);
-  return max;
+  return Math.max(
+    ...data
+      .split("\n\n")
+      .map((x) => x.split("\n"))
+      .map((y) => y.map((z) => parseInt(z)).reduce((a, b) => a + b))
+  );
 };
 
 /*******************************/
@@ -28,16 +28,11 @@ export const partOne = async () => {
 /*******************************/
 export const partTwo = async () => {
   const data = await getData();
-  const arr: number[] = data
+  return data
     .split("\n\n")
     .map((x) => x.split("\n"))
-    .map((y) => y.map((z) => parseInt(z)).reduce((a, b) => a + b));
-  let sum = 0;
-  for (let i = 0; i < 3; i++) {
-    const max = Math.max(...arr);
-    const maxIndex = arr.indexOf(max);
-    arr.splice(maxIndex, 1);
-    sum += max;
-  }
-  return sum;
+    .map((y) => y.map((z) => parseInt(z)).reduce((a, b) => a + b))
+    .sort()
+    .slice(-3)
+    .reduce((c, d) => c + d);
 };
