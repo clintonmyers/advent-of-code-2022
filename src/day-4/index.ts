@@ -20,30 +20,18 @@ const data = (async () => {
     .map((x) => x.map((y) => parseInt(y)));
 })();
 
+const checkOne = (x: number[]) =>
+  (x[0] <= x[2] && x[1] >= x[3]) || (x[2] <= x[0] && x[3] >= x[1]);
+
+const checkTwo = (x: number[]) =>
+  (x[1] >= x[2] && x[0] <= x[2]) || (x[3] >= x[0] && x[2] <= x[0]);
+
 /******************************/
 /* Part One                   */
 /******************************/
-export const partOne = async () => {
-  const arr = await data;
-  let sum = 0;
-  arr.map((x) => {
-    if ((x[0] <= x[2] && x[1] >= x[3]) || (x[2] <= x[0] && x[3] >= x[1])) {
-      sum += 1;
-    }
-  });
-  return sum;
-};
+export const partOne = async () => (await data).filter(checkOne).length;
 
 /******************************/
 /* Part Two                   */
 /******************************/
-export const partTwo = async () => {
-  const arr = await data;
-  let sum = 0;
-  arr.map((x) => {
-    if ((x[1] >= x[2] && x[0] <= x[2]) || (x[3] >= x[0] && x[2] <= x[0])) {
-      sum += 1;
-    }
-  });
-  return sum;
-};
+export const partTwo = async () => (await data).filter(checkTwo).length;
