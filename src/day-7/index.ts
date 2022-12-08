@@ -18,10 +18,6 @@ const obj: folder = {};
 
 let sum = 0;
 
-interface file {
-  [name: string]: number;
-}
-
 interface folder {
   [name: string]: folder | number;
 }
@@ -70,14 +66,29 @@ const genObj = (str: string): void => {
 const dig = (obj: folder): number => {
   const copy = { ...obj };
   const folders = Object.keys(obj).filter((x) => typeof obj[x] === "object");
-  // console.log(folders);
   if (folders.length) {
     folders.map((x) => (copy[x] = dig(copy[x] as folder)));
   }
   const folderSize = Object.values(copy as fileFolder).reduce((a, b) => a + b);
   if (folderSize <= 100000) {
-    // console.log(Object.values(copy));
     sum += folderSize;
+  }
+  return folderSize;
+};
+
+let needed: number;
+
+const updateArr: number[] = [];
+
+const dig2 = (obj: folder): number => {
+  const copy = { ...obj };
+  const folders = Object.keys(obj).filter((x) => typeof obj[x] === "object");
+  if (folders.length) {
+    folders.map((x) => (copy[x] = dig2(copy[x] as folder)));
+  }
+  const folderSize = Object.values(copy as fileFolder).reduce((a, b) => a + b);
+  if (folderSize >= needed) {
+    updateArr.push(folderSize);
   }
   return folderSize;
 };
@@ -88,8 +99,7 @@ const dig = (obj: folder): number => {
 export const partOne = async () => {
   const arr = await data;
   arr.map((x) => genObj(x));
-  console.log(obj);
-  dig(obj);
+  needed = dig(obj) - 40000000;
   return sum;
 };
 
@@ -97,6 +107,6 @@ export const partOne = async () => {
 /* Part Two                   */
 /******************************/
 export const partTwo = async () => {
-  const arr = await data;
-  return 1;
+  dig2(obj);
+  return updateArr.sort((a, b) => a - b)[0];
 };
