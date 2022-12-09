@@ -12,10 +12,14 @@ const getData = async () => {
 
 const data = (async () => {
   const data = await getData();
-  return data.split("\n").map((x: string) => x.split(" ") as [string, number]);
+  return data.split("\n").map((x: string) => x.split(" ") as move);
 })();
 
 type coord = [number, number];
+
+type direction = "U" | "D" | "L" | "R";
+
+type move = [direction, number];
 
 interface Rope {
   knots: Knots;
@@ -27,37 +31,41 @@ interface Knots {
   [id: number]: coord;
 }
 
-const rope1: Rope = {
-  knots: {
-    0: [0, 0],
-    1: [0, 0],
-  },
-  tail: 1,
-  tailLocs: ["0,0"],
+// Turns moves and knots into the number of unique tail locations
+const generateTailLocQty = (moves: move[], knots = 2): number => {
+  const tailLocs = moveRope(moves, knots).tailLocs;
+  const uniqueTailLocs = new Set(tailLocs);
+  return uniqueTailLocs.size;
 };
 
-const rope2: Rope = {
-  knots: {
-    0: [0, 0],
-    1: [0, 0],
-    2: [0, 0],
-    3: [0, 0],
-    4: [0, 0],
-    5: [0, 0],
-    6: [0, 0],
-    7: [0, 0],
-    8: [0, 0],
-    9: [0, 0],
-  },
-  tail: 9,
-  tailLocs: ["0,0"],
+// Starts with a fresh rope and outputs the final rope location
+// including tail locations
+const moveRope = (moves: move[], knots = 2): Rope => {
+  const rope = { ...generateRope(knots) };
+  moves.map((x: move) => moveHead(rope, x));
+  return rope;
 };
 
+// Generates an initial rope of a certain size
+const generateRope = (knots = 2): Rope => {
+  const rope: Rope = {
+    knots: {},
+    tail: knots - 1,
+    tailLocs: ["0,0"],
+  };
+  for (let i = 0; i < knots; i++) {
+    rope.knots[i] = [0, 0];
+  }
+  return { ...rope };
+};
+
+// Checks if two points are close to each other
 const headNearTail = ([hx, hy]: coord, [tx, ty]: coord): boolean =>
   withinOne(hx, tx) && withinOne(hy, ty);
 
 const withinOne = (a: number, b: number): boolean => !(Math.abs(a - b) > 1);
 
+// Moves the knot behind a moving knot if necessary
 const moveTailtoHead = ([hx, hy]: coord, [tx, ty]: coord): coord | null => {
   let newTx: number;
   let newTy: number;
@@ -70,7 +78,9 @@ const moveTailtoHead = ([hx, hy]: coord, [tx, ty]: coord): coord | null => {
   return [newTx, newTy];
 };
 
-const moveHead = (rope: Rope, [dir, dist]: [string, number]): Rope => {
+// Moves the head knot of the entire rope and triggers
+// all cascading moves
+const moveHead = (rope: Rope, [dir, dist]: move): Rope => {
   const newRope = { ...rope };
   for (let i = 1; i <= dist; i++) {
     newRope.knots[0] = moveHeadOnce(newRope.knots[0], dir) as coord;
@@ -85,7 +95,7 @@ const moveHead = (rope: Rope, [dir, dist]: [string, number]): Rope => {
   return newRope;
 };
 
-const moveHeadOnce = ([x, y]: coord, dir: string): coord | null => {
+const moveHeadOnce = ([x, y]: coord, dir: direction): coord | null => {
   switch (dir) {
     case "U":
       return [x, y + 1];
@@ -106,9 +116,7 @@ const moveHeadOnce = ([x, y]: coord, dir: string): coord | null => {
 /******************************/
 export const partOne = async () => {
   const arr = await data;
-  arr.map((x: [string, number]) => moveHead(rope1, x));
-  const set = new Set(rope1.tailLocs);
-  return set.size;
+  return generateTailLocQty(arr);
 };
 
 /******************************/
@@ -116,7 +124,5 @@ export const partOne = async () => {
 /******************************/
 export const partTwo = async () => {
   const arr = await data;
-  arr.map((x: [string, number]) => moveHead(rope2, x));
-  const set = new Set(rope2.tailLocs);
-  return set.size;
+  return generateTailLocQty(arr, 10);
 };
