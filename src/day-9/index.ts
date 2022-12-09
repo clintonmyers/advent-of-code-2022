@@ -12,25 +12,19 @@ const getData = async () => {
 
 const data = (async () => {
   const data = await getData();
-  return data
-    .split("\n")
-    .map((x) => x.split("-"))
-    .map((x) => [x[0], ...x[1].split(","), x[2]])
-    .map((x) => x.map((y) => parseInt(y)));
+  return data.split("\n");
 })();
-
-const checkOne = (x: number[]) =>
-  (x[0] <= x[2] && x[1] >= x[3]) || (x[2] <= x[0] && x[3] >= x[1]);
-
-const checkTwo = (x: number[]) =>
-  (x[1] >= x[2] && x[0] <= x[2]) || (x[3] >= x[0] && x[2] <= x[0]);
 
 /******************************/
 /* Part One                   */
 /******************************/
-export const partOne = async () => (await data).filter(checkOne).length;
+export const partOne = async () => {
+  return 1;
+};
 
 /******************************/
 /* Part Two                   */
 /******************************/
-export const partTwo = async () => (await data).filter(checkTwo).length;
+export const partTwo = async () => {
+  return 1;
+};

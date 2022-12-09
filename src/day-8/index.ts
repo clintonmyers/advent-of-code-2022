@@ -1,8 +1,6 @@
-import { hasSubscribers } from "diagnostics_channel";
 import fs from "fs/promises";
 import path from "path";
 import _ from "lodash";
-import { DefaultDeserializer } from "v8";
 
 /******************************/
 /* Utils                      */
