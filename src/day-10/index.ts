@@ -86,5 +86,5 @@ export const partOne = async () => {
 export const partTwo = async () => {
   const arr = await data;
   render(arr);
-  return 1;
+  return "See Above";
 };
