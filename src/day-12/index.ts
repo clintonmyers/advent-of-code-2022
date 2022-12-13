@@ -140,7 +140,7 @@ const generateOutput = (data: string[][]) => {
 const checkClimb = (start: string, end: string): boolean => {
   const startI = getHeightIndex(start);
   const endI = getHeightIndex(end);
-  return startI - endI <= 1;
+  return endI - startI <= 1;
 };
 
 // For height comparison, takes in a height character
@@ -219,13 +219,13 @@ export const partOne = async () => {
 
   // Get starting point for E
   arr.map((y, i, data) => {
-    if (data[i].indexOf("E") !== -1) {
-      sY = i;
-      sX = data[i].indexOf("E");
-    }
     if (data[i].indexOf("S") !== -1) {
+      sY = i;
+      sX = data[i].indexOf("S");
+    }
+    if (data[i].indexOf("E") !== -1) {
       eY = i;
-      eX = data[i].indexOf("S");
+      eX = data[i].indexOf("E");
     }
   });
 
