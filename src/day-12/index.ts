@@ -1,9 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
 
-// HEADS UP, I coded this problem to start from the end and work backwards
-// because it looked like it might be more efficient.
-
 /******************************/
 /* Types                      */
 /******************************/
@@ -112,7 +109,6 @@ const canMove = (
   if (!checkCost([eX, eY], count)) {
     return false;
   }
-  // console.log(`[${eX} ,${eY}]: ${costs[`${eX},${eY}`]}`);
   generateOutput(data);
 
   return [eX, eY];
@@ -206,16 +202,12 @@ const convertPointsToMinCount = (arr: string[]): number => {
 export const partOne = async () => {
   const arr = await data;
 
-  // E starting point
+  // S starting point
   let sX = 0;
   let sY = 0;
-  // $ end point
+  // E end point
   let eX = 0;
   let eY = 0;
-
-  const xMax = arr[0].length;
-  const yMax = arr.length;
-  const totalSize = xMax * yMax;
 
   // Get starting point for E
   arr.map((y, i, data) => {
@@ -229,20 +221,7 @@ export const partOne = async () => {
     }
   });
 
-  console.log("here");
-  console.log(sX, sY);
   costs[`${sX},${sY}`] = 0;
-
-  generateOutput(arr);
-
-  console.log("E");
-  console.log(sX, sY);
-  // 139 20
-  console.log("S");
-  console.log(eX, eY);
-  // 0 20
-  console.log(xMax, yMax);
-  // 161 41
 
   checkMoves([sX, sY], arr);
 
