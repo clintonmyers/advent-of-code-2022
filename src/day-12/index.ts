@@ -62,8 +62,10 @@ const data = (async () => {
   return data.split("\n").map((x) => x.split(""));
 })();
 
+// Convert coord to string
 const pt2str = (point: coord) => `${point[0]},${point[1]}`;
 
+// Convert string to coord
 const str2pt = (str: string): coord =>
   str.split(",").map((x) => parseInt(x)) as coord;
 
@@ -109,11 +111,13 @@ const canMove = (
   if (!checkCost([eX, eY], count)) {
     return false;
   }
-  generateOutput(data);
+  // UNCOMMENT TO VISUALIZE DATA
+  // generateOutput(data);
 
   return [eX, eY];
 };
 
+// Can be used to visualize the data
 const generateOutput = (data: string[][]) => {
   const arr: string[][] = [];
   const xMax = data[0].length;
@@ -136,7 +140,7 @@ const generateOutput = (data: string[][]) => {
 const checkClimb = (start: string, end: string): boolean => {
   const startI = getHeightIndex(start);
   const endI = getHeightIndex(end);
-  return endI - startI <= 1;
+  return startI - endI <= 1;
 };
 
 // For height comparison, takes in a height character
@@ -167,6 +171,7 @@ const checkCost = (point: coord, count: number): boolean => {
   return false;
 };
 
+// Generates a string array of all points that exist at a given height
 const generateArrayOfSingleHeight = (
   char: string,
   data: string[][]
@@ -192,8 +197,15 @@ const convertPointToCount = (point: coord): number => {
 
 // Takes in a string array of points and returns the lowest count
 const convertPointsToMinCount = (arr: string[]): number => {
-  const countArr = arr.map((x) => costs[x]);
+  const countArr = arr.map((x) => costs[x]).filter((x) => x !== undefined);
   return Math.min(...countArr);
+};
+
+// For a given height, what is the minimum number of steps required
+// to get to the good signal
+const findMinCountForHeight = (char: string, data: string[][]): number => {
+  const arr = generateArrayOfSingleHeight(char, data);
+  return convertPointsToMinCount(arr);
 };
 
 /******************************/
@@ -202,14 +214,14 @@ const convertPointsToMinCount = (arr: string[]): number => {
 export const partOne = async () => {
   const arr = await data;
 
-  // S starting point
+  // E starting point
   let sX = 0;
   let sY = 0;
-  // E end point
+  // S end point
   let eX = 0;
   let eY = 0;
 
-  // Get starting point for E
+  // Set start and end points
   arr.map((y, i, data) => {
     if (data[i].indexOf("S") !== -1) {
       sY = i;
@@ -221,17 +233,17 @@ export const partOne = async () => {
     }
   });
 
-  costs[`${sX},${sY}`] = 0;
+  costs[`${eX},${eY}`] = 0;
 
-  checkMoves([sX, sY], arr);
+  checkMoves([eX, eY], arr);
 
-  return costs[`${eX},${eY}`];
+  return costs[`${sX},${sY}`];
 };
 
 /******************************/
 /* Part Two                   */
 /******************************/
 export const partTwo = async () => {
-  // return convertPointsToMinCount('a');
-  return 1;
+  const arr = await data;
+  return findMinCountForHeight("a", arr);
 };
