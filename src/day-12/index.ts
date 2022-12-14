@@ -212,38 +212,40 @@ const findMinCountForHeight = (char: string, data: string[][]): number => {
 /* Part One                   */
 /******************************/
 export const partOne = async () => {
-  const arr = await data;
+  // const arr = await data;
 
-  // E starting point
-  let sX = 0;
-  let sY = 0;
-  // S end point
-  let eX = 0;
-  let eY = 0;
+  // // E starting point
+  // let sX = 0;
+  // let sY = 0;
+  // // S end point
+  // let eX = 0;
+  // let eY = 0;
 
-  // Set start and end points
-  arr.map((y, i, data) => {
-    if (data[i].indexOf("S") !== -1) {
-      sY = i;
-      sX = data[i].indexOf("S");
-    }
-    if (data[i].indexOf("E") !== -1) {
-      eY = i;
-      eX = data[i].indexOf("E");
-    }
-  });
+  // // Set start and end points
+  // arr.map((y, i, data) => {
+  //   if (data[i].indexOf("S") !== -1) {
+  //     sY = i;
+  //     sX = data[i].indexOf("S");
+  //   }
+  //   if (data[i].indexOf("E") !== -1) {
+  //     eY = i;
+  //     eX = data[i].indexOf("E");
+  //   }
+  // });
 
-  costs[`${eX},${eY}`] = 0;
+  // costs[`${eX},${eY}`] = 0;
 
-  checkMoves([eX, eY], arr);
+  // checkMoves([eX, eY], arr);
 
-  return costs[`${sX},${sY}`];
+  // return costs[`${sX},${sY}`];
+  return "Uncomment code to see answer.";
 };
 
 /******************************/
 /* Part Two                   */
 /******************************/
 export const partTwo = async () => {
-  const arr = await data;
-  return findMinCountForHeight("a", arr);
+  // const arr = await data;
+  // return findMinCountForHeight("a", arr);
+  return "Uncomment code to see answer.";
 };
