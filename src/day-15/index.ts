@@ -24,7 +24,7 @@ type coord = [number, number];
 /******************************/
 
 const getData = async () => {
-  return await fs.readFile(path.resolve(__dirname, "./input1.txt"), {
+  return await fs.readFile(path.resolve(__dirname, "./input.txt"), {
     encoding: "utf8",
   });
 };
@@ -113,7 +113,7 @@ const overRange = (newRange: coord, range: coord) => {
 
 // Check if a value is inside the bounds of a range
 const inRange = (value: number, range: coord): boolean => {
-  return value >= range[0] && value <= range[1];
+  return value + 1 >= range[0] && value - 1 <= range[1];
 };
 
 // Check if a range is inside the bounds of another range
@@ -133,13 +133,52 @@ const combineRange = (range: number[]): coord | null => {
 };
 
 const cantBeHere = (data: [coord, coord][], row: number): coord[] => {
-  return data
-    .map((x) => findRangeX(...x, row))
-    .filter((x) => x !== null)
-    .map((x) => x as coord)
-    .reduce((acc, y) => {
-      return integrateRange(y, acc);
-    }, [] as coord[]);
+  return (
+    data
+      // Go through every Signal/Beacon combo and return
+      // the range where no beacon can be founds
+      .map((x) => findRangeX(...x, row))
+      .filter((x) => x !== null)
+      .map((x) => x as coord)
+      // Consolidate all ranges into a single group of ranges
+      .reduce((acc, y) => {
+        return integrateRange(y, acc);
+      }, [] as coord[])
+  );
+};
+
+// Cleans up the edges of the data to ensure no out of bounds data.
+const filteredCBH = (
+  data: [coord, coord][],
+  row: number,
+  xMax: number,
+  xMin = 0
+): coord[] => {
+  return cantBeHere(data, row)
+    .filter((x) => x[1] >= xMin || x[0] <= xMax)
+    .map((x) => {
+      let [left, right] = x;
+      if (x[0] < xMin) left = xMin;
+      if (x[1] > xMax) right = xMax;
+      return [left, right];
+    });
+};
+
+// Finds the one gap point
+const gap = (
+  data: [coord, coord][],
+  yMax: number,
+  xMax: number,
+  yMin = 0,
+  xMin = 0
+): coord | null => {
+  for (let i = yMin; i < yMax; i++) {
+    const row = filteredCBH(data, i, xMax, xMin);
+    if (row.length > 1) {
+      return [row[1][0] - 1, i];
+    }
+  }
+  return null;
 };
 
 const tuningFreq = (point: coord): number => point[0] * 4000000 + point[1];
@@ -160,5 +199,8 @@ export const partOne = async () => {
 /******************************/
 
 export const partTwo = async () => {
-  return 2;
+  const arr = await data;
+  const max = 4000000;
+
+  return tuningFreq(gap(arr, max, max) as coord);
 };
