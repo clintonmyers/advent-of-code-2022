@@ -24,7 +24,7 @@ type coord = [number, number];
 /******************************/
 
 const getData = async () => {
-  return await fs.readFile(path.resolve(__dirname, "./input.txt"), {
+  return await fs.readFile(path.resolve(__dirname, "./input1.txt"), {
     encoding: "utf8",
   });
 };
@@ -85,13 +85,6 @@ const findRangeX = (
   return range;
 };
 
-// const findRange = (range: coord, row: number): [coord, coord] => {
-//   return [
-//     [range[0], row],
-//     [range[1], row],
-//   ];
-// };
-
 // Combine a new range with existing ranges
 const integrateRange = (newRange: coord, data: coord[]): coord[] => {
   const toBeCombined: coord[] = [[...newRange]];
@@ -139,6 +132,16 @@ const combineRange = (range: number[]): coord | null => {
   return answer;
 };
 
+const cantBeHere = (data: [coord, coord][], row: number): coord[] => {
+  return data
+    .map((x) => findRangeX(...x, row))
+    .filter((x) => x !== null)
+    .map((x) => x as coord)
+    .reduce((acc, y) => {
+      return integrateRange(y, acc);
+    }, [] as coord[]);
+};
+
 const tuningFreq = (point: coord): number => point[0] * 4000000 + point[1];
 
 /******************************/
@@ -148,13 +151,7 @@ const tuningFreq = (point: coord): number => point[0] * 4000000 + point[1];
 export const partOne = async () => {
   const arr = await data;
 
-  const ranges = arr
-    .map((x) => findRangeX(...x, 2000000))
-    .filter((x) => x !== null)
-    .map((x) => x as coord)
-    .reduce((acc, y) => {
-      return integrateRange(y, acc);
-    }, [] as coord[]);
+  const ranges = cantBeHere(arr, 10);
   return ranges.map((x) => x[1] - x[0]).reduce((a, b) => a + b);
 };
 
